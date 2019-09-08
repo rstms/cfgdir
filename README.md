@@ -3,7 +3,7 @@ Read envdir style configuration directory and output as JSON or YAML
 
 Project is hosted at https://github.com/rstms/cfgdir
 
-Inspired by djb's excellent [envdir](https://cr.yp.to/daemontools/envdir.html)
+Inspired by [djb's](https://cr.yp.to/djb.html) excellent [envdir](https://cr.yp.to/daemontools/envdir.html), a component of [daemontools](https://cr.yp.to/daemontools.html)
 
 Leverage the powerful simplicity of the filesystem as your configuration database, and the
 freedom to fluidly manipulate configuration data from your shell.
