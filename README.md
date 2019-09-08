@@ -26,7 +26,8 @@ The format of d is as follows: (adapted from envdir's documentation)
 
 
 ### Arguments:
-   ----------|----------|--|----------
+   Argument | | default | Description
+   --- | --- | --- | ---
    DIRECTORY | required | | Directory containing configuration data files
    INPUT | optional | /dev/null | Input filename or - for stdin
    OUPUT | optional | stdout | Output Filename or - for stdout
