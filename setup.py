@@ -4,11 +4,11 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="cfgdir-rstms",
-    version="0.0.1",
+    name="cfgdir",
+    version="0.0.2",
     author="Matt Krueger",
     author_email="mkrueger@rstms.net",
-    description="output envdir as JSON",
+    description="output envdir as JSON or YAML",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/rstms/cfgdir",
@@ -21,7 +21,6 @@ setuptools.setup(
         "Environment :: Console",
 
     ],
-    #python_requires='>=3.6',
     py_modules=['cfgdir'],
     include_package_data=True,
     install_requires=[
