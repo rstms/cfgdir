@@ -5,13 +5,15 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="cfgdir",
-    version="0.0.2",
+    version="0.0.3",
     author="Matt Krueger",
     author_email="mkrueger@rstms.net",
     description="output envdir as JSON or YAML",
     long_description=long_description,
     long_description_content_type="text/markdown",
+    license='MIT',
     url="https://github.com/rstms/cfgdir",
+    keywords='envdir configuration config',
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 2.7",
