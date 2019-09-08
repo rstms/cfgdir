@@ -1,5 +1,5 @@
 # cfgdir
-Read envdir style configuration directory and output as JSON
+Read envdir style configuration directory and output as JSON or YAML
 
 Project is hosted at https://github.com/rstms/cfgdir
 
