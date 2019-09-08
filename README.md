@@ -1,10 +1,12 @@
 # cfgdir
 Read envdir style configuration directory and output as JSON
 
-I'm a long-time fan of DJB's [envdir](https://cr.yp.to/daemontools/envdir.html)
+Project is hosted at https://github.com/rstms/cfgdir
 
-Leverage the powerful simplicity of using the filesystem as your database, and the
-freedom to manipulate configuration data in any way.
+Inspired by djb's excellent [envdir](https://cr.yp.to/daemontools/envdir.html)
+
+Leverage the powerful simplicity of the filesystem as your configuration database, and the
+freedom to fluidly manipulate configuration data from your shell.
 
 Unlike envdir's mechanism of running another program with the configuration in environment variables,
 this program outputs a stream in JSON or YAML format.  This output can be captured in a file
