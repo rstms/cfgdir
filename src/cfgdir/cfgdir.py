@@ -51,35 +51,41 @@ def read_file_value(filename, key):
     with open(filename) as f:
         value = f.readline().strip()
 
-    while value[-1] in ('\n', ' ', '\t'):
-        value = value[:-1]
+    if value:
+        while value[-1] in ('\n', ' ', '\t'):
+            value = value[:-1]
 
-    # support json type specification with filename extensions
-    type_conversions = [
-      ('.string', str),
-      ('.s', str),
-      ('.integer', int),
-      ('.i', int),
-      ('.number', float),
-      ('.n', float),
-      ('.float', float),
-      ('.f', float),
-      ('.boolean', bool),
-      ('.bool', bool),
-      ('.b', bool),
-      ('.null', _null),
-    ]
-    for extension, convert in type_conversions:
-        if key.endswith(extension):
-            key = key[:-len(extension)]
-            value = convert(value)
-            break
+    (key, value) = apply_type_conversion(key, value)         
 
     # convert nulls in string to newlines
     if type(value)==str:
         value = ''.join(['\n' if c=='\0' else c  for c in value])
     
     return (key, value)
+
+def apply_type_conversion(key, value):
+    # support json type specification with filename extensions
+    type_conversions = [
+        ('.string', str),
+        ('.s', str),
+        ('.integer', int),
+        ('.i', int),
+        ('.number', float),
+        ('.n', float),
+        ('.float', float),
+        ('.f', float),
+        ('.boolean', bool),
+        ('.bool', bool),
+        ('.b', bool),
+        ('.null', _null),
+    ]
+    for extension, convert in type_conversions:
+        if key.endswith(extension):
+            key = key[:-len(extension)]
+            value = convert(value) if value else None
+            break
+    return (key, value)
+
        
 def read_dir_as_dict(directory, result, recurse):
     for name, dirs, files in os.walk(directory):
@@ -89,6 +95,7 @@ def read_dir_as_dict(directory, result, recurse):
                 (k, v) = read_file_value(pathname, f)
                 result[k] = v
             else:
+                (f, _) = apply_type_conversion(f, None)
                 if f in result:
                     del(result[f])
         if recurse:

@@ -17,14 +17,31 @@ ifile=open(filename)
 ilines = ifile.readlines()
 ifile.close()
 
+version='0.0.0'
+
+bump_major=0
+bump_minor=0
+bump_build=1
+
+mflag=True
+nflag=True
 bflag=True
 dflag=True
 tflag=True
+vflag=True
 
 olines=[]
 for line in ilines:
-    if bflag and line.startswith('BUILD'):
-        build=int(line.split('=')[1])+1
+    if mflag and line.startswith('MAJOR'):
+        major=int(line.split('=')[1])+bump_major
+        olines.append('MAJOR=%d\n' % major)
+        mflag=False
+    elif nflag and line.startswith('MINOR'):
+        minor=int(line.split('=')[1])+bump_minor
+        olines.append('MINOR=%d\n' % minor)
+        nflag=False
+    elif bflag and line.startswith('BUILD'):
+        build=int(line.split('=')[1])+bump_build
         olines.append('BUILD=%d\n' % build)
         bflag=False
     elif dflag and line.startswith('DATE'):
@@ -35,6 +52,10 @@ for line in ilines:
         now = datetime.datetime.now()
         olines.append('TIME=\'%s\'\n' % now.strftime('%H:%M:%S'))
         tflag = False
+    elif vflag and line.startswith('VERSION'):
+        version='%s.%s.%s' % (major, minor, build)
+        olines.append('VERSION=\'%s\'\n' % version)
+        vflag = False
     else:
         olines.append(line)
 
@@ -42,3 +63,5 @@ ofile=open(filename,'w')
 for line in olines:
     ofile.write(line)
 ofile.close()
+
+print(version)

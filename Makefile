@@ -15,9 +15,9 @@ tools:
 
 TPARM :=
 
-test: $(sort $(wildcard $(PROJECT)/*-test.py))
+test:
 	@echo "Testing..."
-	cd $(PROJECT); py.test -vvx --no-print-logs $(TPARM) $(notdir $^)
+	pytest -vvx --no-print-logs $(TPARM)
 
 install:
 	@echo Installing ${PROJECT} locally
@@ -29,11 +29,11 @@ uninstall:
 
 clean:
 	@echo Cleaning up...
-	rm -rf build dist *.egg-info
+	rm -rf build dist *.egg-info src/$(PROJECT)/*.pyc src/$(PROJECT)/__pycache__ .pytest_cache
 
 dist:
 	@echo building ${PROJECT}
-	./bumpbuild ${PROJECT}/version.py
+	scripts/bumpbuild src/${PROJECT}/version.py >VERSION
 	${PYTHON} setup.py sdist bdist_wheel
 
 publish: dist
