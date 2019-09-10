@@ -1,11 +1,13 @@
 import setuptools
 
+from cfgdir.version import __version__
+
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="cfgdir",
-    version="0.0.3",
+    version=__version__,
     author="Matt Krueger",
     author_email="mkrueger@rstms.net",
     description="output envdir as JSON or YAML",

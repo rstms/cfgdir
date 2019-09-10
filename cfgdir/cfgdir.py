@@ -4,6 +4,7 @@ import click
 import os
 import json as lib_json
 import yaml as lib_yaml
+import sys
 
 @click.command()
 
@@ -15,7 +16,6 @@ import yaml as lib_yaml
 @click.argument('directory', type=click.Path(exists=True, file_okay=False)) #, help='directory containing configuration values')
 @click.argument('input', type=click.File('rb'), default='/dev/null') #, help='optional input filename or - for stdin, defaults to none')
 @click.argument('output', type=click.File('wb'), default='-') #, help='optional output filename')
-
 
 def cli(directory, input, output, compact, sort, json, yaml, recurse):
     default = input.read()
@@ -42,19 +42,52 @@ def cli(directory, input, output, compact, sort, json, yaml, recurse):
     output.write((out+'\n').encode('utf-8'))
     output.flush()
 
-def read_file_value(filename):
+def _null(s):
+    return None
+
+def read_file_value(filename, key):
+
+    _key = key
     with open(filename) as f:
-        value = f.readline()
-    if value.endswith('\n'):
+        value = f.readline().strip()
+
+    while value[-1] in ('\n', ' ', '\t'):
         value = value[:-1]
-    return value
+
+    # support json type specification with filename extensions
+    type_conversions = [
+      ('.string', str),
+      ('.s', str),
+      ('.integer', int),
+      ('.i', int),
+      ('.number', float),
+      ('.n', float),
+      ('.float', float),
+      ('.f', float),
+      ('.boolean', bool),
+      ('.bool', bool),
+      ('.b', bool),
+      ('.null', _null),
+    ]
+    for extension, convert in type_conversions:
+        if key.endswith(extension):
+            key = key[:-len(extension)]
+            value = convert(value)
+            break
+
+    # convert nulls in string to newlines
+    if type(value)==str:
+        value = ''.join(['\n' if c=='\0' else c  for c in value])
+    
+    return (key, value)
        
 def read_dir_as_dict(directory, result, recurse):
     for name, dirs, files in os.walk(directory):
         for f in files:
             pathname = os.path.join(name, f)
             if os.path.getsize(pathname):
-                result[f] = read_file_value(pathname)
+                (k, v) = read_file_value(pathname, f)
+                result[k] = v
             else:
                 if f in result:
                     del(result[f])

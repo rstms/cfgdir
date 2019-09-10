@@ -5,13 +5,19 @@ PROJECT:=cfgdir
 # prefer python3
 PYTHON:=python3
 
-.PHONY: help tools install uninstall dist publish
+.PHONY: help tools test install uninstall dist publish
 
 help: 
-	@echo "make tools|install|uninstall|dist|publish"
+	@echo "make tools|test|install|uninstall|dist|publish"
 
 tools: 
 	${PYTHON} -m pip install --user --upgrade setuptools wheel twine
+
+TPARM :=
+
+test: $(sort $(wildcard $(PROJECT)/*-test.py))
+	@echo "Testing..."
+	cd $(PROJECT); py.test -vvx --no-print-logs $(TPARM) $(notdir $^)
 
 install:
 	@echo Installing ${PROJECT} locally
@@ -27,6 +33,7 @@ clean:
 
 dist:
 	@echo building ${PROJECT}
+	./bumpbuild ${PROJECT}/version.py
 	${PYTHON} setup.py sdist bdist_wheel
 
 publish: dist
