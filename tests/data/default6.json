@@ -1,0 +1,15 @@
+{
+  "KEY_3": "foo",
+  "KEY_2": 2,
+  "b4": false,
+  "b5": false,
+  "KEY_1": 1,
+  "b1": true,
+  "b2": false,
+  "b3": true,
+  "sub": {
+    "V1": "value",
+    "V2": 1.243,
+    "V3": 3.14159
+  }
+}
