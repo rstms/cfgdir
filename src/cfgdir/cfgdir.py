@@ -10,7 +10,7 @@ import sys
 
 @click.option('-c', '--compact', is_flag=True, help='minimize output')
 @click.option('-s', '--sort', is_flag=True, help='sort output')
-@click.option('-j', '--json', is_flag=True, default=True, help='JSON format')
+@click.option('-j', '--json', is_flag=True, default=False, help='JSON format')
 @click.option('-y', '--yaml', is_flag=True, default=False, help='YAML format')
 @click.option('-r', '--recurse', is_flag=True, default=False, help='process subdirectories')
 @click.argument('directory', type=click.Path(exists=True, file_okay=False)) #, help='directory containing configuration values')
@@ -19,13 +19,12 @@ import sys
 
 def cli(directory, input, output, compact, sort, json, yaml, recurse):
     default = input.read()
-    if yaml:
-        json=False
+
     if default:
-        if json:
-            cfg = lib_json.loads(default)
-        else:
+        if yaml:
             cfg = lib_yaml.safe_load(default)
+        else:
+            cfg = lib_json.loads(default)
     else:
         cfg = {}
     cfg = read_dir_as_dict(directory, cfg, recurse)
@@ -35,10 +34,10 @@ def cli(directory, input, output, compact, sort, json, yaml, recurse):
     else:
         i=2
         s=(',',': ')
-    if json:
-        out =  lib_json.dumps(cfg, sort_keys=sort, indent=i, separators=s) 
-    else:
+    if yaml:
         out =  lib_yaml.dump(cfg)
+    else:
+        out =  lib_json.dumps(cfg, sort_keys=sort, indent=i, separators=s) 
     output.write((out+'\n').encode('utf-8'))
     output.flush()
 
@@ -63,6 +62,14 @@ def read_file_value(filename, key):
     
     return (key, value)
 
+def convert_bool(value):
+    value = value.strip().lower()
+    if value in ['', '0', 'false', 'f', 'no', 'n']:
+      value = False
+    else:
+      value = True
+    return value
+
 def apply_type_conversion(key, value):
     # support json type specification with filename extensions
     type_conversions = [
@@ -74,9 +81,9 @@ def apply_type_conversion(key, value):
         ('.n', float),
         ('.float', float),
         ('.f', float),
-        ('.boolean', bool),
-        ('.bool', bool),
-        ('.b', bool),
+        ('.boolean', convert_bool),
+        ('.bool', convert_bool),
+        ('.b', convert_bool),
         ('.null', _null),
     ]
     for extension, convert in type_conversions:
@@ -100,7 +107,7 @@ def read_dir_as_dict(directory, result, recurse):
                     del(result[f])
         if recurse:
             for d in dirs:
-                result[d] = read_dir_as_dict(os.path.join(name, d), {}, recurse)
+                result[d] = read_dir_as_dict(os.path.join(name, d), result.setdefault(d, {}), recurse)
         break
     return result
 
