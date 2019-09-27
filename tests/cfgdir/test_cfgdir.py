@@ -70,3 +70,23 @@ def test_recurse_overwrite():
       }
     }
     _cli(['tests/data/cfg6', 'tests/data/default6.json', '-r'], results)
+
+def test_overlay():
+    results = {
+        "KEY_1":"1_over",
+        "KEY_2": "over2",
+        "sub":{
+            "V1":"newvalue",
+            "NEWBOOL": False,
+            "NEWKEY": 1,
+            "SUB2": "subover2"
+        },
+        "KEY_3":"foo.over"
+    }
+
+    o = '{"KEY_2":"over2", "sub": {"SUB2":"subover2"}}'
+    j = json.loads(o)
+    assert j
+    assert type(j)==dict
+    assert j == {'KEY_2': 'over2', 'sub': {'SUB2': 'subover2'}}
+    _cli(['tests/data/cfg7', '-r', '-o', o], results)

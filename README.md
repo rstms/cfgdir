@@ -1,7 +1,8 @@
 # cfgdir
+
 Read envdir style configuration directory and output as JSON or YAML
 
-Project is hosted at https://github.com/rstms/cfgdir
+https://github.com/rstms/cfgdir
 
 Inspired by [djb's](https://cr.yp.to/djb.html) excellent [envdir](https://cr.yp.to/daemontools/envdir.html), a component of [daemontools](https://cr.yp.to/daemontools.html)
 
@@ -28,7 +29,7 @@ The format of d is as follows: (adapted from envdir's documentation)
 ### Arguments:
    Argument | | default | Description
    --- | --- | --- | ---
-   DIRECTORY | required | | Directory containing configuration data files
+   DIRECTORY | optional | /dev/null | Directory containing configuration data files
    INPUT | optional | /dev/null | Input filename or - for stdin
    OUPUT | optional | stdout | Output Filename or - for stdout
 
@@ -39,5 +40,6 @@ The format of d is as follows: (adapted from envdir's documentation)
   -j, --json     JSON format
   -y, --yaml     YAML format
   -r, --recurse  process subdirectories
+  -o, --overlay  overlay JSON/YAML formatted string onto output
   --help         Show this message and exit.
 ```

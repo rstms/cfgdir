@@ -13,21 +13,28 @@ import sys
 @click.option('-j', '--json', is_flag=True, default=False, help='JSON format')
 @click.option('-y', '--yaml', is_flag=True, default=False, help='YAML format')
 @click.option('-r', '--recurse', is_flag=True, default=False, help='process subdirectories')
-@click.argument('directory', type=click.Path(exists=True, file_okay=False)) #, help='directory containing configuration values')
+@click.option('-o', '--overlay', default='', help='overlay JSON/YAML string onto output')
+@click.argument('directory', type=click.Path(exists=True, file_okay=False),
+default='/dev/null') #, help='directory containing configuration values')
 @click.argument('input', type=click.File('rb'), default='/dev/null') #, help='optional input filename or - for stdin, defaults to none')
 @click.argument('output', type=click.File('wb'), default='-') #, help='optional output filename')
 
-def cli(directory, input, output, compact, sort, json, yaml, recurse):
+def cli(directory, input, output, compact, sort, json, yaml, recurse, overlay):
     default = input.read()
 
+    if yaml:
+        parser = lib_yaml.safe_load
+    else:
+        parser = lib_json.loads
     if default:
-        if yaml:
-            cfg = lib_yaml.safe_load(default)
-        else:
-            cfg = lib_json.loads(default)
+        cfg = parser(default)
     else:
         cfg = {}
     cfg = read_dir_as_dict(directory, cfg, recurse)
+
+    if overlay:
+        cfg = apply_overlay(cfg, parser(overlay))
+
     if compact:
         i=None
         s=(',',':')
@@ -93,7 +100,6 @@ def apply_type_conversion(key, value):
             break
     return (key, value)
 
-       
 def read_dir_as_dict(directory, result, recurse):
     for name, dirs, files in os.walk(directory):
         for f in files:
@@ -111,3 +117,12 @@ def read_dir_as_dict(directory, result, recurse):
         break
     return result
 
+def apply_overlay(source, overlay):
+    """apply add keys from overlay into source"""
+    for k, v in overlay.items():
+        if type(v) == dict:
+            source.setdefault(k, {})
+            source[k] = apply_overlay(source[k], overlay[k])
+        else:
+            source[k] = v
+    return source
