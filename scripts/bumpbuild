@@ -19,9 +19,19 @@ ifile.close()
 
 version='0.0.0'
 
-bump_major=0
-bump_minor=0
-bump_build=1
+options = [s.lower() for s in sys.argv[2:]]
+if 'major' in options:
+    bump_major = 1
+    bump_minor = 0
+    bump_build = 0
+elif 'minor' in options:
+    bump_major = 0
+    bump_minor = 1
+    bump_build = 0
+else:
+    bump_major = 0
+    bump_minor = 0
+    bump_build = 1
 
 mflag=True
 nflag=True
@@ -38,10 +48,14 @@ for line in ilines:
         mflag=False
     elif nflag and line.startswith('MINOR'):
         minor=int(line.split('=')[1])+bump_minor
+        if bump_major:
+            minor = 0
         olines.append('MINOR=%d\n' % minor)
         nflag=False
     elif bflag and line.startswith('BUILD'):
         build=int(line.split('=')[1])+bump_build
+        if bump_major or bump_minor:
+            build = 0
         olines.append('BUILD=%d\n' % build)
         bflag=False
     elif dflag and line.startswith('DATE'):

@@ -6,6 +6,12 @@ import json as lib_json
 import yaml as lib_yaml
 import sys
 
+# support python2 or python3
+if sys.version_info[0] < 3:
+    from version import VERSION
+else:
+    from cfgdir.version import VERSION
+
 @click.command()
 
 @click.option('-c', '--compact', is_flag=True, help='minimize output')
@@ -18,6 +24,7 @@ import sys
 default='/dev/null') #, help='directory containing configuration values')
 @click.argument('input', type=click.File('rb'), default='/dev/null') #, help='optional input filename or - for stdin, defaults to none')
 @click.argument('output', type=click.File('wb'), default='-') #, help='optional output filename')
+@click.version_option(VERSION)
 
 def cli(directory, input, output, compact, sort, json, yaml, recurse, overlay):
     default = input.read()
