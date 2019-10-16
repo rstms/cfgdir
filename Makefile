@@ -38,8 +38,9 @@ gitclean:
 
 VERSION: ${SOURCES}
 	scripts/bumpbuild >VERSION src/${PROJECT}/version.py ${VERSION}
-	git commit -m "v`cat VERSION`" -a
-	git push
+	echo "v`cat VERSION`"
+	#git commit -m "v`cat VERSION`" -a
+	#git push
 
 dist: gitclean VERSION 
 	@echo building ${PROJECT}
