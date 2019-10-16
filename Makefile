@@ -59,7 +59,7 @@ release: dist
 	@echo pushing Release ${PROJECT} v`cat VERSION` to github...
 	TAG="v`cat VERSION`"; git tag -a $$TAG -m "Release $$TAG"; git push origin $$TAG
 
-# comment out following target if not releasing to PyPI
+# comment out following target if not publishing to PyPI
 publish: release
 	@echo publishing ${PROJECT} v`cat VERSION` to PyPI...
 	${PYTHON} -m twine upload dist/*
