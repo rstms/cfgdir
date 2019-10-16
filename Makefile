@@ -37,10 +37,18 @@ gitclean:
 	$(if $(shell git status --porcelain), $(error "git status dirty, commit and push first"))
 
 VERSION: ${SOURCES}
+	# if VERSION=major|minor|[build], bump corresponding version element, and commit
 	scripts/bumpbuild >VERSION src/${PROJECT}/version.py ${VERSION}
-	echo "v`cat VERSION`"
-	#git commit -m "v`cat VERSION`" -a
-	#git push
+	@echo "Version bumped to `cat VERSION`"
+	@EXPECTED_STATUS=`echo -e ' M VERSION\n M src/${PROJECT}/version.py'`;\
+        if [ "`git status --porcelain`" != "$$EXPECTED_STATUS" ]; then \
+	  echo "git state is dirty, not committing version update."; exit 1; \
+	else \
+	  echo "Committing version update..."; \
+	  git add VERSION src/${PROJECT}/version.py; \
+	  git commit -m "bumped version to `cat VERSION`"; \
+	  git push; \
+	fi
 
 dist: gitclean VERSION 
 	@echo building ${PROJECT}
