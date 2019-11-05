@@ -12,20 +12,23 @@ if sys.version_info[0] < 3:
 else:
     from cfgdir.version import VERSION
 
-@click.command()
 
+@click.command()
 @click.option('-c', '--compact', is_flag=True, help='minimize output')
 @click.option('-s', '--sort', is_flag=True, help='sort output')
 @click.option('-j', '--json', is_flag=True, default=False, help='JSON format')
 @click.option('-y', '--yaml', is_flag=True, default=False, help='YAML format')
-@click.option('-r', '--recurse', is_flag=True, default=False, help='process subdirectories')
-@click.option('-o', '--overlay', default='', help='overlay JSON/YAML string onto output')
+@click.option('-r', '--recurse', is_flag=True, default=False,
+              help='process subdirectories')
+@click.option('-o', '--overlay', default='',
+              help='overlay JSON/YAML string onto output')
 @click.argument('directory', type=click.Path(exists=True, file_okay=False),
-default='/dev/null') #, help='directory containing configuration values')
-@click.argument('input', type=click.File('rb'), default='/dev/null') #, help='optional input filename or - for stdin, defaults to none')
-@click.argument('output', type=click.File('wb'), default='-') #, help='optional output filename')
+                default='/dev/null')  # , help='directory containing configuration values')
+@click.argument('input', type=click.File('rb'),
+                default='/dev/null')  # , help='optional input filename or - for stdin, defaults to none')
+@click.argument('output', type=click.File('wb'),
+                default='-')  # , help='optional output filename')
 @click.version_option(VERSION)
-
 def cli(directory, input, output, compact, sort, json, yaml, recurse, overlay):
     default = input.read()
 
@@ -43,24 +46,24 @@ def cli(directory, input, output, compact, sort, json, yaml, recurse, overlay):
         cfg = apply_overlay(cfg, parser(overlay))
 
     if compact:
-        i=None
-        s=(',',':')
+        i = None
+        s = (',', ':')
     else:
-        i=2
-        s=(',',': ')
+        i = 2
+        s = (',', ': ')
     if yaml:
-        out =  lib_yaml.dump(cfg)
+        out = lib_yaml.dump(cfg)
     else:
-        out =  lib_json.dumps(cfg, sort_keys=sort, indent=i, separators=s) 
-    output.write((out+'\n').encode('utf-8'))
+        out = lib_json.dumps(cfg, sort_keys=sort, indent=i, separators=s)
+    output.write((out + '\n').encode('utf-8'))
     output.flush()
+
 
 def _null(s):
     return None
 
-def read_file_value(filename, key):
 
-    _key = key
+def read_file_value(filename, key):
     with open(filename) as f:
         value = f.readline().strip()
 
@@ -68,21 +71,23 @@ def read_file_value(filename, key):
         while value[-1] in ('\n', ' ', '\t'):
             value = value[:-1]
 
-    (key, value) = apply_type_conversion(key, value)         
+    (key, value) = apply_type_conversion(key, value)
 
     # convert nulls in string to newlines
-    if type(value)==str:
-        value = ''.join(['\n' if c=='\0' else c  for c in value])
-    
+    if type(value) == str:
+        value = ''.join(['\n' if c == '\0' else c for c in value])
+
     return (key, value)
+
 
 def convert_bool(value):
     value = value.strip().lower()
     if value in ['', '0', 'false', 'f', 'no', 'n']:
-      value = False
+        value = False
     else:
-      value = True
+        value = True
     return value
+
 
 def apply_type_conversion(key, value):
     # support json type specification with filename extensions
@@ -105,7 +110,8 @@ def apply_type_conversion(key, value):
             key = key[:-len(extension)]
             value = convert(value) if value else None
             break
-    return (key, value)
+    return key, value
+
 
 def read_dir_as_dict(directory, result, recurse):
     for name, dirs, files in os.walk(directory):
@@ -117,12 +123,14 @@ def read_dir_as_dict(directory, result, recurse):
             else:
                 (f, _) = apply_type_conversion(f, None)
                 if f in result:
-                    del(result[f])
+                    del (result[f])
         if recurse:
             for d in dirs:
-                result[d] = read_dir_as_dict(os.path.join(name, d), result.setdefault(d, {}), recurse)
+                result[d] = read_dir_as_dict(os.path.join(name, d),
+                                             result.setdefault(d, {}), recurse)
         break
     return result
+
 
 def apply_overlay(source, overlay):
     """apply add keys from overlay into source"""

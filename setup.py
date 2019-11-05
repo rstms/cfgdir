@@ -21,24 +21,25 @@ setup(
     keywords='envdir configuration config',
     packages=find_packages('src'),
     package_dir={'': 'src'},
-    data_files=[('.',['VERSION'])],
+    data_files=[('.', ['VERSION'])],
     classifiers=[
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Environment :: Console",
-
     ],
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
     include_package_data=True,
     install_requires=[
         'Click',
         'pyyaml',
-   ],
-   entry_points={
-       'console_scripts': [
-           'cfgdir=cfgdir:cli',
+        'pytest',
+        'flake8'
+    ],
+    entry_points={
+        'console_scripts': [
+            'cfgdir=cfgdir:cli',
         ],
-   },
+    },
 )
