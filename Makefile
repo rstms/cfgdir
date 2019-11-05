@@ -6,10 +6,10 @@ PROJECT:=$(shell basename `pwd`)
 PYTHON:=python3
 
 # find all python sources (used to determine when to bump build number)
-SOURCES:=$(shell find setup.py Makefile src tests -name '*.py')
+SOURCES:=$(shell find setup.py Makefile ${PROJECT} tests -name '*.py')
 
 # if VERSION=major or VERSION=minor specified, 
-$(if ${VERSION}, $(shell touch src/${PROJECT}/version.py))
+$(if ${VERSION}, $(shell touch ${PROJECT}/version.py))
 
 .PHONY: help tools test install uninstall dist gitclean publish release clean 
 
@@ -39,14 +39,14 @@ gitclean:
 VERSION: gitclean ${SOURCES}
 	# If VERSION=major|minor or sources have changed, bump corresponding version element
 	# and commit after testing for any other uncommitted changes.
-	scripts/bumpbuild >VERSION src/${PROJECT}/version.py ${VERSION}
+	scripts/bumpbuild >VERSION ${PROJECT}/version.py ${VERSION}
 	@echo "Version bumped to `cat VERSION`"
-	@EXPECTED_STATUS=$$(/bin/echo -e " M VERSION\n M src/${PROJECT}/version.py");\
+	@EXPECTED_STATUS=$$(/bin/echo -e " M VERSION\n M ${PROJECT}/version.py");\
         if [ "`git status --porcelain`" != "$$EXPECTED_STATUS" ]; then \
 	  echo "git state is dirty, not committing version update."; exit 1; \
 	else \
 	  echo "Committing version update..."; \
-	  git add VERSION src/${PROJECT}/version.py; \
+	  git add VERSION ${PROJECT}/version.py; \
 	  git commit -m "bumped version to `cat VERSION`"; \
 	  git push; \
 	fi
@@ -66,6 +66,6 @@ publish: release
 
 clean:
 	@echo Cleaning up...
-	rm -rf build dist src/*.egg-info .pytest_cache .tox
+	rm -rf build dist ./*.egg-info .pytest_cache .tox
 	find . -type d -name __pycache__ | xargs rm -rf
 	find . -name '*.pyc' | xargs rm -f

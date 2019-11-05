@@ -19,9 +19,9 @@ setup(
     license='MIT',
     url="https://github.com/rstms/cfgdir",
     keywords='envdir configuration config',
-    packages=find_packages('src'),
-    package_dir={'': 'src'},
+    packages=find_packages(exclude=('tests', 'docs')),
     data_files=[('.', ['VERSION'])],
+    include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
@@ -29,8 +29,6 @@ setup(
         "Operating System :: OS Independent",
         "Environment :: Console",
     ],
-    py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
-    include_package_data=True,
     install_requires=[
         'Click',
         'pyyaml',

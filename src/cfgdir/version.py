@@ -1,6 +1,0 @@
-MAJOR = 0
-MINOR = 9
-BUILD = 1
-DATE = '2019-10-16'
-TIME = '11:00:55'
-VERSION = '0.9.1'
