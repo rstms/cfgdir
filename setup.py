@@ -8,6 +8,14 @@ with open("README.md", "r") as fh:
 with open('VERSION', 'r') as fh:
     version = fh.readline().strip()
 
+requires = [
+    'Click',
+    'pyyaml',
+    'pytest',
+    'pytest-datadir',
+    'flake8'
+]
+
 setup(
     name="cfgdir",
     version=version,
@@ -29,12 +37,7 @@ setup(
         "Operating System :: OS Independent",
         "Environment :: Console",
     ],
-    install_requires=[
-        'Click',
-        'pyyaml',
-        'pytest',
-        'flake8'
-    ],
+    install_requires=requires,
     entry_points={
         'console_scripts': [
             'cfgdir=cfgdir:cli',
