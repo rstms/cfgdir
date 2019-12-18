@@ -8,13 +8,8 @@ with open("README.md", "r") as fh:
 with open('VERSION', 'r') as fh:
     version = fh.readline().strip()
 
-requires = [
-    'Click',
-    'pyyaml',
-    'pytest',
-    'pytest-datadir',
-    'flake8'
-]
+with open('requirements.txt', 'r') as fh:
+    requires = fh.readline().strip()
 
 setup(
     name="cfgdir",

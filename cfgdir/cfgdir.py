@@ -8,7 +8,6 @@ import sys
 
 from .version import VERSION
 
-
 @click.command()
 @click.option('-c', '--compact', is_flag=True, help='minimize output')
 @click.option('-s', '--sort', is_flag=True, help='sort output')

@@ -1,0 +1,5 @@
+Click
+pyyaml
+pytest
+pytest-datadir
+flake8
