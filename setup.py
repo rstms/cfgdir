@@ -9,7 +9,7 @@ with open('VERSION', 'r') as fh:
     version = fh.readline().strip()
 
 with open('requirements.txt', 'r') as fh:
-    requires = fh.readline().strip()
+    requires = [l.strip() for l in fh.readlines()]
 
 setup(
     name="cfgdir",
