@@ -43,8 +43,7 @@ VERSION: gitclean ${SOURCES}
 	#
 	pybump bump --file VERSION --level $(if ${VERSION},${VERSION},'patch')
 	@echo "Version bumped to `cat VERSION`"
-	@echo -e >${PROJECT}/version.py "DATE=${date +%Y-%m-%d}\nTIME=${date +%H:%M%S}\nVERSION='${cat VERSION}'"
-
+	@/bin/echo -e >${PROJECT}/version.py "DATE='$$(date +%Y-%m-%d)'\nTIME='$$(date +%H:%M:%S)'\nVERSION='$$(cat VERSION)'"
 	@EXPECTED_STATUS=$$(/bin/echo -e " M VERSION\n M ${PROJECT}/version.py");\
         if [ "`git status --porcelain`" != "$$EXPECTED_STATUS" ]; then \
 	  echo "git state is dirty, not committing version update."; exit 1; \

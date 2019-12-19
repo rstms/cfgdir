@@ -23,7 +23,7 @@ setup(
     url="https://github.com/rstms/cfgdir",
     keywords='envdir configuration config',
     packages=find_packages(exclude=('tests', 'docs')),
-    data_files=[('.', ['VERSION'])],
+    data_files=[('.', ['VERSION', 'LICENSE'])],
     include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 2.7",
