@@ -36,16 +36,13 @@ uninstall:
 gitclean: 
 	$(if $(shell git status --porcelain), $(error "git status dirty, commit and push first"))
 
-
-${PROJECT}/version.py: VERSION
-	@/bin/echo -e >${PROJECT}/version.py "DATE='$$(date +%Y-%m-%d)'\nTIME='$$(date +%H:%M:%S)'\nVERSION='$$(cat VERSION)'"
-
 # bump version in VERSION and in python source
 VERSION: gitclean ${SOURCES}
 	# If VERSION=major|minor or sources have changed, bump corresponding version element
 	# and commit after testing for any other uncommitted changes.
 	#
 	pybump bump --file VERSION --level $(if ${VERSION},${VERSION},'patch')
+	@/bin/echo -e >${PROJECT}/version.py "DATE='$$(date +%Y-%m-%d)'\nTIME='$$(date +%H:%M:%S)'\nVERSION='$$(cat VERSION)'"
 	@echo "Version bumped to `cat VERSION`"
 	@EXPECTED_STATUS=$$(/bin/echo -e " M VERSION\n M ${PROJECT}/version.py");\
         if [ "`git status --porcelain`" != "$$EXPECTED_STATUS" ]; then \
