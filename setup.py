@@ -33,7 +33,6 @@ setup(
         "Environment :: Console",
     ],
     install_requires=requires,
-    tests_require=['pytest', 'pytest-datadir'],
     entry_points={
         'console_scripts': [
             'cfgdir=cfgdir:cli',
