@@ -15,7 +15,7 @@ def test_call():
     #assert result
     assert True
 
-def _cli(args, config, parse_yaml=False):
+def _cli(args, config, parse_type='json'):
 
     print('_cli%s' % repr((args, config)))
     runner = CliRunner()
@@ -23,11 +23,16 @@ def _cli(args, config, parse_yaml=False):
     assert result.output
     print('results:\n%s' % result.output)
     assert result.exit_code == 0
-    if parse_yaml:
+    if parse_type == 'yaml':
         cfg = yaml.safe_load(result.output)
-    else:
+        type_expected = dict
+    elif parse_type == 'json':
         cfg = json.loads(result.output)
-    assert type(cfg) == dict
+        type_expected = dict
+    elif parse_type == 'envfile':
+        cfg = result.output
+        type_expected = str 
+    assert type(cfg) == type_expected 
     assert cfg == config
     # pprint(cfg)
 
@@ -62,13 +67,15 @@ def test_yaml_switch(datadir):
     _cli(
         [str(datadir / 'cfg'), '-y'],
         {'KEY_1': '1', 'KEY_2': '2', 'KEY_3': 'foo'},
-        parse_yaml=True)
+        parse_type='yaml')
 
 
 def test_json_switch(datadir):
     _cli([str(datadir / 'cfg'), '-j'],
          {'KEY_1': '1', 'KEY_2': '2', 'KEY_3': 'foo'})
 
+def test_envdir_switch(datadir):
+    _cli([str(datadir / 'cfg'), '-e'], 'KEY_1=1\nKEY_2=2\nKEY_3=foo\n', parse_type='envfile')
 
 def test_overwrite(datadir):
     _cli([str(datadir / 'cfg5'), str(datadir / 'default.json')],

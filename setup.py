@@ -23,7 +23,7 @@ setup(
     url="https://github.com/rstms/cfgdir",
     keywords='envdir configuration config',
     packages=find_packages(exclude=('tests', 'docs')),
-    data_files=[('.', ['VERSION', 'LICENSE'])],
+    data_files=[('.', ['VERSION', 'LICENSE', 'requirements.txt'])],
     include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 2.7",
@@ -33,6 +33,7 @@ setup(
         "Environment :: Console",
     ],
     install_requires=requires,
+    tests_require=['pytest', 'pytest-datadir'],
     entry_points={
         'console_scripts': [
             'cfgdir=cfgdir:cli',

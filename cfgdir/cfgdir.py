@@ -13,6 +13,7 @@ from .version import VERSION
 @click.option('-s', '--sort', is_flag=True, help='sort output')
 @click.option('-j', '--json', is_flag=True, default=False, help='JSON format')
 @click.option('-y', '--yaml', is_flag=True, default=False, help='YAML format')
+@click.option('-e', '--dotenv', is_flag=True, default=False, help='.env format')
 @click.option('-r', '--recurse', is_flag=True, default=False,
               help='process subdirectories')
 @click.option('-o', '--overlay', default='',
@@ -23,12 +24,14 @@ from .version import VERSION
                 default=os.devnull)  # , help='optional input filename or - for stdin, defaults to none')
 @click.argument('output', type=click.File('wb'), default='-')  # , help='optional output filename')
 @click.version_option(VERSION)
-def cli(directory, input, output, compact, sort, json, yaml, recurse, overlay):
+def cli(directory, input, output, compact, sort, json, yaml, dotenv, recurse, overlay):
 
     default = input.read()
 
     if yaml:
         parser = lib_yaml.safe_load
+    elif dotenv:
+        parser = dotenv_load
     else:
         parser = lib_json.loads
     if default:
@@ -48,15 +51,15 @@ def cli(directory, input, output, compact, sort, json, yaml, recurse, overlay):
         s = (',', ': ')
     if yaml:
         out = lib_yaml.dump(cfg)
+    elif dotenv:
+        out = dotenv_dump(cfg)
     else:
         out = lib_json.dumps(cfg, sort_keys=sort, indent=i, separators=s)
     output.write((out + '\n').encode('utf-8'))
     output.flush()
 
-
 def _null(s):
     return None
-
 
 def read_file_value(filename, key):
     with open(filename) as f:
@@ -126,7 +129,6 @@ def read_dir_as_dict(directory, result, recurse):
         break
     return result
 
-
 def apply_overlay(source, overlay):
     """apply add keys from overlay into source"""
     for k, v in overlay.items():
@@ -136,6 +138,19 @@ def apply_overlay(source, overlay):
         else:
             source[k] = v
     return source
+
+def dotenv_load(data_str):
+  ret = {}
+  for l in data_str.split('\n'):
+    a=l.split('=')
+    ret[a[0]]='='.join(a[1:])
+  return ret
+
+def dotenv_dump(data_dict):
+  ret = ''
+  for k,v in data_dict.items():
+    ret = '%s%s%s' % (ret, '\n' if len(ret) else '', '%s=%s' % (k, v))
+  return ret
 
 if __name__=='__main__':
     cli(sys.argv[1:])
