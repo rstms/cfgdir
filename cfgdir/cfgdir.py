@@ -52,7 +52,7 @@ def cli(directory, input, output, compact, sort, json, yaml, dotenv, recurse, ov
     if yaml:
         out = lib_yaml.dump(cfg)
     elif dotenv:
-        out = dotenv_dump(cfg)
+        out = dotenv_dump(cfg, sort)
     else:
         out = lib_json.dumps(cfg, sort_keys=sort, indent=i, separators=s)
     output.write((out + '\n').encode('utf-8'))
@@ -146,10 +146,13 @@ def dotenv_load(data_str):
     ret[a[0]]='='.join(a[1:])
   return ret
 
-def dotenv_dump(data_dict):
+def dotenv_dump(data_dict, sort=False):
   ret = ''
   for k,v in data_dict.items():
     ret = '%s%s%s' % (ret, '\n' if len(ret) else '', '%s=%s' % (k, v))
+  if sort:
+    ret = '\n'.join(sorted(ret.split('\n')))
+    
   return ret
 
 if __name__=='__main__':

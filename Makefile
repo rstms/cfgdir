@@ -56,6 +56,7 @@ VERSION: gitclean ${SOURCES}
 
 # create distributable files
 dist: VERSION 
+	tox
 	@echo building ${PROJECT}
 	${PYTHON} setup.py sdist bdist_wheel
 

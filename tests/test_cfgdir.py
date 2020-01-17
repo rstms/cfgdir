@@ -1,5 +1,6 @@
 import json
 import yaml
+import six
 
 from click.testing import CliRunner
 
@@ -31,7 +32,10 @@ def _cli(args, config, parse_type='json'):
         type_expected = dict
     elif parse_type == 'envfile':
         cfg = result.output
-        type_expected = str 
+        assert type(cfg) == unicode if six.PY2 else str
+        type_expected = set 
+        cfg=set(cfg.split('\n'))
+        config=set(config.split('\n'))
     assert type(cfg) == type_expected 
     assert cfg == config
     # pprint(cfg)
@@ -75,7 +79,7 @@ def test_json_switch(datadir):
          {'KEY_1': '1', 'KEY_2': '2', 'KEY_3': 'foo'})
 
 def test_envdir_switch(datadir):
-    _cli([str(datadir / 'cfg'), '-e'], 'KEY_1=1\nKEY_2=2\nKEY_3=foo\n', parse_type='envfile')
+    _cli([str(datadir / 'cfg'), '-e', '-s'], 'KEY_1=1\nKEY_2=2\nKEY_3=foo\n', parse_type='envfile')
 
 def test_overwrite(datadir):
     _cli([str(datadir / 'cfg5'), str(datadir / 'default.json')],
