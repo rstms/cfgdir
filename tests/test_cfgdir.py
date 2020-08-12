@@ -6,7 +6,6 @@ from click.testing import CliRunner
 
 import cfgdir
 
-
 def test_init():
     cli = cfgdir.cli
     assert cli

@@ -8,9 +8,6 @@ with open("README.md", "r") as fh:
 with open('VERSION', 'r') as fh:
     version = fh.readline().strip()
 
-with open('requirements.txt', 'r') as fh:
-    requires = [l.strip() for l in fh.readlines()]
-
 setup(
     name="cfgdir",
     version=version,
@@ -32,7 +29,17 @@ setup(
         "Operating System :: OS Independent",
         "Environment :: Console",
     ],
-    install_requires=requires,
+    install_requires=[
+        'click', 
+        'pyyaml'
+    ],
+    tests_require=[
+        'pytest',
+        'pytest-datadir',
+        'tox',
+        'pybump',
+        'twine'
+    ],
     entry_points={
         'console_scripts': [
             'cfgdir=cfgdir:cli',
