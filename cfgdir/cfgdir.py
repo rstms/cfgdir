@@ -149,7 +149,7 @@ def dotenv_load(data_str):
 def dotenv_dump(data_dict, sort=False):
   ret = ''
   for k,v in data_dict.items():
-    ret = '%s%s%s' % (ret, '\n' if len(ret) else '', '%s=%s' % (k, v))
+    ret = '%s%s%s' % (ret, '\n' if len(ret) else '', '%s=\'%s\'' % (k, v))
   if sort:
     ret = '\n'.join(sorted(ret.split('\n')))
     

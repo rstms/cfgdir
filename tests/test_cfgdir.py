@@ -41,7 +41,7 @@ def _cli(args, config, parse_type='json'):
 
 
 def test_cli(datadir):
-    _cli([str(datadir / 'cfg')], {'KEY_1': '1', 'KEY_2': '2', 'KEY_3': 'foo'})
+    _cli([str(datadir / 'cfg')], {'KEY_1': '1', 'KEY_2': '2', 'KEY_3': 'foo', 'KEY_4': 'multi word string'})
     _cli([str(datadir / 'cfg1')], {'KEY_1': '1', 'KEY_2': '2', 'KEY_3': 'foo'})
     _cli([str(datadir / 'cfg2')], {'KEY_1': '1', 'KEY_3': '3'})
 
@@ -69,16 +69,16 @@ def test_lf_data(datadir):
 def test_yaml_switch(datadir):
     _cli(
         [str(datadir / 'cfg'), '-y'],
-        {'KEY_1': '1', 'KEY_2': '2', 'KEY_3': 'foo'},
+        {'KEY_1': '1', 'KEY_2': '2', 'KEY_3': 'foo', 'KEY_4': 'multi word string'},
         parse_type='yaml')
 
 
 def test_json_switch(datadir):
     _cli([str(datadir / 'cfg'), '-j'],
-         {'KEY_1': '1', 'KEY_2': '2', 'KEY_3': 'foo'})
+         {'KEY_1': '1', 'KEY_2': '2', 'KEY_3': 'foo', 'KEY_4': 'multi word string'})
 
 def test_envdir_switch(datadir):
-    _cli([str(datadir / 'cfg'), '-e', '-s'], 'KEY_1=1\nKEY_2=2\nKEY_3=foo\n', parse_type='envfile')
+    _cli([str(datadir / 'cfg'), '-e', '-s'], "KEY_1='1'\nKEY_2='2'\nKEY_3='foo'\nKEY_4='multi word string'\n", parse_type='envfile')
 
 def test_overwrite(datadir):
     _cli([str(datadir / 'cfg5'), str(datadir / 'default.json')],
