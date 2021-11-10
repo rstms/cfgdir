@@ -22,7 +22,7 @@ TPARM :=
 
 test:
 	@echo "Testing..."
-	pytest -vvx --no-print-logs $(TPARM)
+	pytest -vvx $(TPARM)
 
 install:
 	@echo Installing ${PROJECT} locally

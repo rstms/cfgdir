@@ -80,6 +80,10 @@ def test_json_switch(datadir):
 def test_envdir_switch(datadir):
     _cli([str(datadir / 'cfg'), '-e', '-s'], "KEY_1='1'\nKEY_2='2'\nKEY_3='foo'\nKEY_4='multi word string'\n", parse_type='envfile')
 
+def test_export_switch(datadir):
+    _cli([str(datadir / 'cfg'), '-x', '-s'], "export KEY_1='1'\nexport KEY_2='2'\nexport KEY_3='foo'\nexport KEY_4='multi word string'\n", parse_type='envfile')
+
+
 def test_overwrite(datadir):
     _cli([str(datadir / 'cfg5'), str(datadir / 'default.json')],
          {'KEY_1': '1_over', 'KEY_2': '2', 'KEY_3': 'foo.over'})

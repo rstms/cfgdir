@@ -14,6 +14,7 @@ from .version import VERSION
 @click.option('-j', '--json', is_flag=True, default=False, help='JSON format')
 @click.option('-y', '--yaml', is_flag=True, default=False, help='YAML format')
 @click.option('-e', '--dotenv', is_flag=True, default=False, help='.env format')
+@click.option('-x', '--export', is_flag=True, default=False, help='export format')
 @click.option('-r', '--recurse', is_flag=True, default=False,
               help='process subdirectories')
 @click.option('-o', '--overlay', default='',
@@ -24,13 +25,13 @@ from .version import VERSION
                 default=os.devnull)  # , help='optional input filename or - for stdin, defaults to none')
 @click.argument('output', type=click.File('wb'), default='-')  # , help='optional output filename')
 @click.version_option(VERSION)
-def cli(directory, input, output, compact, sort, json, yaml, dotenv, recurse, overlay):
+def cli(directory, input, output, compact, sort, json, yaml, dotenv, recurse, overlay, export):
 
     default = input.read()
 
     if yaml:
         parser = lib_yaml.safe_load
-    elif dotenv:
+    elif dotenv or export:
         parser = dotenv_load
     else:
         parser = lib_json.loads
@@ -53,6 +54,8 @@ def cli(directory, input, output, compact, sort, json, yaml, dotenv, recurse, ov
         out = lib_yaml.dump(cfg)
     elif dotenv:
         out = dotenv_dump(cfg, sort)
+    elif export:
+        out = dotenv_dump(cfg, sort, prefix='export ')
     else:
         out = lib_json.dumps(cfg, sort_keys=sort, indent=i, separators=s)
     output.write((out + '\n').encode('utf-8'))
@@ -146,10 +149,10 @@ def dotenv_load(data_str):
     ret[a[0]]='='.join(a[1:])
   return ret
 
-def dotenv_dump(data_dict, sort=False):
+def dotenv_dump(data_dict, sort=False, prefix=''):
   ret = ''
   for k,v in data_dict.items():
-    ret = '%s%s%s' % (ret, '\n' if len(ret) else '', '%s=\'%s\'' % (k, v))
+    ret = '%s%s%s' % (ret, '\n' if len(ret) else '', '%s%s=\'%s\'' % (prefix, k, v))
   if sort:
     ret = '\n'.join(sorted(ret.split('\n')))
     
