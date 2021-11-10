@@ -1,6 +1,5 @@
 import json
 import yaml
-import six
 
 from click.testing import CliRunner
 
@@ -31,7 +30,7 @@ def _cli(args, config, parse_type='json'):
         type_expected = dict
     elif parse_type == 'envfile':
         cfg = result.output
-        assert type(cfg) == unicode if six.PY2 else str
+        assert type(cfg) == str
         type_expected = set 
         cfg=set(cfg.split('\n'))
         config=set(config.split('\n'))
